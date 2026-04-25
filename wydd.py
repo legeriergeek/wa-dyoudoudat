@@ -518,8 +518,12 @@ def parseCommand(splitted, currentIndex):
         case "INSERT TO CONSOLE AS ASCII":
             finalString = ""
             for arg in range(len(arguments)):
+                
                 if arguments[int(arg)] != '':
-                    finalString += chr(int(arguments[int(arg)]))
+                    if isArgumentVar(arguments[int(arg)]):
+                        finalString += chr(int(var2num(arguments[int(arg)]))) 
+                    else:
+                        finalString += chr(int(arguments[int(arg)]))
             print(finalString)
         case "EXIT THE PROGRAM":
             quit()
