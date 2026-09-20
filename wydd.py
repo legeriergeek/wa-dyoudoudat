@@ -26,6 +26,148 @@ def executeProgram(file):
         else:
             time.sleep(1)
 
+def logicBlockGetLR(arguments):
+    left = 0
+    right = 0
+    if isArgumentVar(arguments[0]):
+        left = var2num(arguments[0])
+    else:
+        left = int(arguments[0])
+    if isArgumentVar(arguments[2]):
+         right = var2num(arguments[2])
+    else:
+        right = int(arguments[2])
+    
+    return [left, right]
+
+def repeatCodeBlocks(logic_comparator, arguments, currentIndex, flip: bool):
+    left, right = logicBlockGetLR(arguments)
+    if (logic_comparator == "NEQUALS" and not flip) or (logic_comparator == "EQUALS" and flip):
+        while left != right:
+            i = 1
+            while i <= int(arguments[3]):
+                parseCommand(splitted_file[currentIndex + i * 2], currentIndex + i * 2)
+                line = splitted_file[currentIndex + i * 2]
+                if ("REPEAT" in line or "EXECUTE CODE IF TRUE" in line) and not line.startswith("END OF"):
+                    i += int(line.split(":")[1].split()[3])
+                i += 1
+            left, right= logicBlockGetLR(arguments)
+    elif (logic_comparator == "EQUALS" and not flip) or (logic_comparator == "NEQUALS" and flip):
+        while left == right:
+            i = 1
+            while i <= int(arguments[3]):
+                parseCommand(splitted_file[currentIndex + i * 2], currentIndex + i * 2)
+                line = splitted_file[currentIndex + i * 2]
+                if ("REPEAT" in line or "EXECUTE CODE IF TRUE" in line) and not line.startswith("END OF"):
+                    i += int(line.split(":")[1].split()[3])
+                i += 1 
+            left, right= logicBlockGetLR(arguments)
+    elif (logic_comparator == "INFEQ" and not flip) or (logic_comparator == "SUPERIOR" and flip):
+        while left <= right:
+            i = 1
+            while i <= int(arguments[3]):
+                parseCommand(splitted_file[currentIndex + i * 2], currentIndex + i * 2)
+                line = splitted_file[currentIndex + i * 2]
+                if ("REPEAT" in line or "EXECUTE CODE IF TRUE" in line) and not line.startswith("END OF"):
+                    i += int(line.split(":")[1].split()[3])
+                i += 1 
+            left, right= logicBlockGetLR(arguments)
+    elif (logic_comparator == "SUPEQ" and not flip) or (logic_comparator == "INFERIOR" and flip):
+        while left >= right:
+            i = 1
+            while i <= int(arguments[3]):
+                parseCommand(splitted_file[currentIndex + i * 2], currentIndex + i * 2)
+                line = splitted_file[currentIndex + i * 2]
+                if ("REPEAT" in line or "EXECUTE CODE IF TRUE" in line) and not line.startswith("END OF"):
+                    i += int(line.split(":")[1].split()[3])
+                i += 1 
+            left, right= logicBlockGetLR(arguments)
+    elif (logic_comparator == "INFERIOR" and not flip) or (logic_comparator == "SUPEQ" and flip):
+        while left < right:
+            i = 1
+            while i <= int(arguments[3]):
+                parseCommand(splitted_file[currentIndex + i * 2], currentIndex + i * 2)
+                line = splitted_file[currentIndex + i * 2]
+                if ("REPEAT" in line or "EXECUTE CODE IF TRUE" in line) and not line.startswith("END OF"):
+                    i += int(line.split(":")[1].split()[3])
+                i += 1 
+            left, right= logicBlockGetLR(arguments)
+    elif (logic_comparator == "SUPERIOR" and not flip) or (logic_comparator == "SUPEQ" and flip):
+        while left > right:
+            i = 1
+            while i <= int(arguments[3]):
+                parseCommand(splitted_file[currentIndex + i * 2], currentIndex + i * 2)
+                line = splitted_file[currentIndex + i * 2]
+                if ("REPEAT" in line or "EXECUTE CODE IF TRUE" in line) and not line.startswith("END OF"):
+                    i += int(line.split(":")[1].split()[3])
+                i += 1 
+            left, right= logicBlockGetLR(arguments)
+    else:
+        raise Exception("Exception Occured.")
+
+def ifCodeBlock(logic_comparator, arguments, currentIndex):
+    left = logicBlockGetLR(arguments)[0]
+    right = logicBlockGetLR(arguments)[1]
+
+    if logic_comparator == "NEQUALS":
+        if left != right:
+            i = 1
+            while i <= int(arguments[3]):
+                parseCommand(splitted_file[currentIndex + i * 2], currentIndex + i * 2)
+                line = splitted_file[currentIndex + i * 2]
+                if ("REPEAT" in line or "EXECUTE CODE IF TRUE" in line) and not line.startswith("END OF"):
+                    i += int(line.split(":")[1].split()[3])
+                i += 1
+    elif logic_comparator == "EQUALS":
+        if left == right:
+            i = 1
+            while i <= int(arguments[3]):
+                parseCommand(splitted_file[currentIndex + i * 2], currentIndex + i * 2)
+                line = splitted_file[currentIndex + i * 2]
+                if ("REPEAT" in line or "EXECUTE CODE IF TRUE" in line) and not line.startswith("END OF"):
+                    i += int(line.split(":")[1].split()[3])
+                i += 1 
+    elif logic_comparator == "INFEQ":
+        if left <= right:
+            i = 1
+            while i <= int(arguments[3]):
+                parseCommand(splitted_file[currentIndex + i * 2], currentIndex + i * 2)
+                line = splitted_file[currentIndex + i * 2]
+                if ("REPEAT" in line or "EXECUTE CODE IF TRUE" in line) and not line.startswith("END OF"):
+                    i += int(line.split(":")[1].split()[3])
+                i += 1 
+    elif logic_comparator == "SUPEQ":
+        if left >= right:
+            i = 1
+            while i <= int(arguments[3]):
+                parseCommand(splitted_file[currentIndex + i * 2], currentIndex + i * 2)
+                line = splitted_file[currentIndex + i * 2]
+                if ("REPEAT" in line or "EXECUTE CODE IF TRUE" in line) and not line.startswith("END OF"):
+                    i += int(line.split(":")[1].split()[3])
+                i += 1 
+    elif logic_comparator == "INFERIOR":
+        if left < right:
+            i = 1
+            while i <= int(arguments[3]):
+                parseCommand(splitted_file[currentIndex + i * 2], currentIndex + i * 2)
+                line = splitted_file[currentIndex + i * 2]
+                if ("REPEAT" in line or "EXECUTE CODE IF TRUE" in line) and not line.startswith("END OF"):
+                    i += int(line.split(":")[1].split()[3])
+                i += 1 
+    elif logic_comparator == "SUPERIOR":
+        if left > right:
+            i = 1
+            while i <= int(arguments[3]):
+                parseCommand(splitted_file[currentIndex + i * 2], currentIndex + i * 2)
+                line = splitted_file[currentIndex + i * 2]
+                if ("REPEAT" in line or "EXECUTE CODE IF TRUE" in line) and not line.startswith("END OF"):
+                    i += int(line.split(":")[1].split()[3])
+                i += 1 
+    else:
+        raise Exception("Exception Occured.")
+
+                
+
 
 def parseCommand(splitted, currentIndex):
     command = splitted.split(":")[0]
@@ -70,455 +212,18 @@ def parseCommand(splitted, currentIndex):
         case "REPEAT UNTIL":
             if not splitted_file[int(arguments[3]) * 2 + 2 + currentIndex].startswith("END OF REPEAT UNTIL"):
                 raise Exception("Exception Occured.")
-            if arguments[1] == "EQUALS":
-                left = 0
-                right = 0
-                if isArgumentVar(arguments[0]):
-                    left = var2num(arguments[0])
-                else:
-                    left = int(arguments[0])
-                if isArgumentVar(arguments[2]):
-                    right = var2num(arguments[2])
-                else:
-                    right = int(arguments[2])
-                while left != right:
-                    i = 1
-                    while i <= int(arguments[3]):
-                        parseCommand(splitted_file[currentIndex + i * 2], currentIndex + i * 2)
-                        line = splitted_file[currentIndex + i * 2]
-                        if ("REPEAT" in line or "EXECUTE CODE IF TRUE" in line) and not line.startswith("END OF"):
-                            i += int(line.split(":")[1].split()[3])
-                        i += 1
-                    
-                    if isArgumentVar(arguments[0]):
-                        left = var2num(arguments[0])
-                    else:
-                        left = int(arguments[0])
-                    if isArgumentVar(arguments[2]):
-                        right = var2num(arguments[2])
-                    else:
-                        right = int(arguments[2])
-            elif arguments[1] == "NEQUALS":
-                left = 0
-                right = 0
-                if isArgumentVar(arguments[0]):
-                    left = var2num(arguments[0])
-                else:
-                    left = int(arguments[0])
-                if isArgumentVar(arguments[2]):
-                    right = var2num(arguments[2])
-                else:
-                    right = int(arguments[2])
-                while left == right:
-                    i = 1
-                    while i <= int(arguments[3]):
-                        parseCommand(splitted_file[currentIndex + i * 2], currentIndex + i * 2)
-                        line = splitted_file[currentIndex + i * 2]
-                        if ("REPEAT" in line or "EXECUTE CODE IF TRUE" in line) and not line.startswith("END OF"):
-                            i += int(line.split(":")[1].split()[3])
-                        i += 1
-                    if isArgumentVar(arguments[0]):
-                        left = var2num(arguments[0])
-                    else:
-                        left = int(arguments[0])
-                    if isArgumentVar(arguments[2]):
-                        right = var2num(arguments[2])
-                    else:
-                        right = int(arguments[2])
-            elif arguments[1] == "SUPERIOR":
-                left = 0
-                right = 0
-                if isArgumentVar(arguments[0]):
-                    left = var2num(arguments[0])
-                else:
-                    left = int(arguments[0])
-                if isArgumentVar(arguments[2]):
-                    right = var2num(arguments[2])
-                else:
-                    right = int(arguments[2])
-                while left <= right:
-                    i = 1
-                    while i <= int(arguments[3]):
-                        parseCommand(splitted_file[currentIndex + i * 2], currentIndex + i * 2)
-                        line = splitted_file[currentIndex + i * 2]
-                        if ("REPEAT" in line or "EXECUTE CODE IF TRUE" in line) and not line.startswith("END OF"):
-                            i += int(line.split(":")[1].split()[3])
-                        i += 1
-                    if isArgumentVar(arguments[0]):
-                        left = var2num(arguments[0])
-                    else:
-                        left = int(arguments[0])
-                    if isArgumentVar(arguments[2]):
-                        right = var2num(arguments[2])
-                    else:
-                        right = int(arguments[2])
-            elif arguments[1] == "INFERIOR":
-                left = 0
-                right = 0
-                if isArgumentVar(arguments[0]):
-                    left = var2num(arguments[0])
-                else:
-                    left = int(arguments[0])
-                if isArgumentVar(arguments[2]):
-                    right = var2num(arguments[2])
-                else:
-                    right = int(arguments[2])
-                while left >= right:
-                    i = 1
-                    while i <= int(arguments[3]):
-                        parseCommand(splitted_file[currentIndex + i * 2], currentIndex + i * 2)
-                        line = splitted_file[currentIndex + i * 2]
-                        if ("REPEAT" in line or "EXECUTE CODE IF TRUE" in line) and not line.startswith("END OF"):
-                            i += int(line.split(":")[1].split()[3])
-                        i += 1
-                    if isArgumentVar(arguments[0]):
-                        left = var2num(arguments[0])
-                    else:
-                        left = int(arguments[0])
-                    if isArgumentVar(arguments[2]):
-                        right = var2num(arguments[2])
-                    else:
-                        right = int(arguments[2])
-            elif arguments[1] == "SUPEQ":
-                left = 0
-                right = 0
-                if isArgumentVar(arguments[0]):
-                    left = var2num(arguments[0])
-                else:
-                    left = int(arguments[0])
-                if isArgumentVar(arguments[2]):
-                    right = var2num(arguments[2])
-                else:
-                    right = int(arguments[2])
-                while left < right:
-                    i = 1
-                    while i <= int(arguments[3]):
-                        parseCommand(splitted_file[currentIndex + i * 2], currentIndex + i * 2)
-                        line = splitted_file[currentIndex + i * 2]
-                        if ("REPEAT" in line or "EXECUTE CODE IF TRUE" in line) and not line.startswith("END OF"):
-                            i += int(line.split(":")[1].split()[3])
-                        i += 1
-                    if isArgumentVar(arguments[0]):
-                        left = var2num(arguments[0])
-                    else:
-                        left = int(arguments[0])
-                    if isArgumentVar(arguments[2]):
-                        right = var2num(arguments[2])
-                    else:
-                        right = int(arguments[2])
-            elif arguments[1] == "INFEQ":
-                left = 0
-                right = 0
-                if isArgumentVar(arguments[0]):
-                    left = var2num(arguments[0])
-                else:
-                    left = int(arguments[0])
-                if isArgumentVar(arguments[2]):
-                    right = var2num(arguments[2])
-                else:
-                    right = int(arguments[2])
-                while left > right:
-                    i = 1
-                    while i <= int(arguments[3]):
-                        parseCommand(splitted_file[currentIndex + i * 2], currentIndex + i * 2)
-                        line = splitted_file[currentIndex + i * 2]
-                        if ("REPEAT" in line or "EXECUTE CODE IF TRUE" in line) and not line.startswith("END OF"):
-                            i += int(line.split(":")[1].split()[3])
-                        i += 1
-                    if isArgumentVar(arguments[0]):
-                        left = var2num(arguments[0])
-                    else:
-                        left = int(arguments[0])
-                    if isArgumentVar(arguments[2]):
-                        right = var2num(arguments[2])
-                    else:
-                        right = int(arguments[2])
+            repeatCodeBlocks(arguments[1], arguments, currentIndex, True)
         case "EXECUTE CODE IF TRUE":
             if not splitted_file[int(arguments[3]) * 2 + 2 + currentIndex].startswith("END OF EXECUTE CODE IF TRUE"):
                 raise Exception("Exception Occured.")
-            if arguments[1] == "EQUALS":
-                left = 0
-                right = 0
-                if isArgumentVar(arguments[0]):
-                    left = var2num(arguments[0])
-                else:
-                    left = int(arguments[0])
-                if isArgumentVar(arguments[2]):
-                    right = var2num(arguments[2])
-                else:
-                    right = int(arguments[2])
-                if left == right:
-                    i = 1
-                    while i <= int(arguments[3]):
-                        parseCommand(splitted_file[currentIndex + i * 2], currentIndex + i * 2)
-                        line = splitted_file[currentIndex + i * 2]
-                        if ("REPEAT" in line or "EXECUTE CODE IF TRUE" in line) and not line.startswith("END OF"):
-                            i += int(line.split(":")[1].split()[3])
-                        i += 1
-            elif arguments[1] == "NEQUALS":
-                left = 0
-                right = 0
-                if isArgumentVar(arguments[0]):
-                    left = var2num(arguments[0])
-                else:
-                    left = int(arguments[0])
-                if isArgumentVar(arguments[2]):
-                    right = var2num(arguments[2])
-                else:
-                    right = int(arguments[2])
-                if left != right:
-                    i = 1
-                    while i <= int(arguments[3]):
-                        parseCommand(splitted_file[currentIndex + i * 2], currentIndex + i * 2)
-                        line = splitted_file[currentIndex + i * 2]
-                        if ("REPEAT" in line or "EXECUTE CODE IF TRUE" in line) and not line.startswith("END OF"):
-                            i += int(line.split(":")[1].split()[3])
-                        i += 1
-            elif arguments[1] == "SUPERIOR":
-                left = 0
-                right = 0
-                if isArgumentVar(arguments[0]):
-                    left = var2num(arguments[0])
-                else:
-                    left = int(arguments[0])
-                if isArgumentVar(arguments[2]):
-                    right = var2num(arguments[2])
-                else:
-                    right = int(arguments[2])
-                if left > right:
-                    i = 1
-                    while i <= int(arguments[3]):
-                        parseCommand(splitted_file[currentIndex + i * 2], currentIndex + i * 2)
-                        line = splitted_file[currentIndex + i * 2]
-                        if ("REPEAT" in line or "EXECUTE CODE IF TRUE" in line) and not line.startswith("END OF"):
-                            i += int(line.split(":")[1].split()[3])
-                        i += 1
-            elif arguments[1] == "INFERIOR":
-                left = 0
-                right = 0
-                if isArgumentVar(arguments[0]):
-                    left = var2num(arguments[0])
-                else:
-                    left = int(arguments[0])
-                if isArgumentVar(arguments[2]):
-                    right = var2num(arguments[2])
-                else:
-                    right = int(arguments[2])
-                if left < right:
-                    i = 1
-                    while i <= int(arguments[3]):
-                        parseCommand(splitted_file[currentIndex + i * 2], currentIndex + i * 2)
-                        line = splitted_file[currentIndex + i * 2]
-                        if ("REPEAT" in line or "EXECUTE CODE IF TRUE" in line) and not line.startswith("END OF"):
-                            i += int(line.split(":")[1].split()[3])
-                        i += 1
-            elif arguments[1] == "SUPEQ":
-                left = 0
-                right = 0
-                if isArgumentVar(arguments[0]):
-                    left = var2num(arguments[0])
-                else:
-                    left = int(arguments[0])
-                if isArgumentVar(arguments[2]):
-                    right = var2num(arguments[2])
-                else:
-                    right = int(arguments[2])
-                if left > right or left == right:
-                    i = 1
-                    while i <= int(arguments[3]):
-                        parseCommand(splitted_file[currentIndex + i * 2], currentIndex + i * 2)
-                        line = splitted_file[currentIndex + i * 2]
-                        if ("REPEAT" in line or "EXECUTE CODE IF TRUE" in line) and not line.startswith("END OF"):
-                            i += int(line.split(":")[1].split()[3])
-                        i += 1
-            elif arguments[1] == "INFEQ":
-                left = 0
-                right = 0
-                if isArgumentVar(arguments[0]):
-                    left = var2num(arguments[0])
-                else:
-                    left = int(arguments[0])
-                if isArgumentVar(arguments[2]):
-                    right = var2num(arguments[2])
-                else:
-                    right = int(arguments[2])
-                if left < right or left == right:
-                    i = 1
-                    while i <= int(arguments[3]):
-                        parseCommand(splitted_file[currentIndex + i * 2], currentIndex + i * 2)
-                        line = splitted_file[currentIndex + i * 2]
-                        if ("REPEAT" in line or "EXECUTE CODE IF TRUE" in line) and not line.startswith("END OF"):
-                            i += int(line.split(":")[1].split()[3])
-                        i += 1
+            ifCodeBlock(arguments[1], arguments, currentIndex)
         case "REPEAT WHILE":
             if not splitted_file[int(arguments[3]) * 2 + 2 + currentIndex].startswith("END OF REPEAT WHILE"):
                 raise Exception("Exception Occured.")
-            if arguments[1] == "EQUALS":
-                left = 0
-                right = 0
-                if isArgumentVar(arguments[0]):
-                    left = var2num(arguments[0])
-                else:
-                    left = int(arguments[0])
-                if isArgumentVar(arguments[2]):
-                    right = var2num(arguments[2])
-                else:
-                    right = int(arguments[2])
-                while left == right:
-                    i = 1
-                    while i <= int(arguments[3]):
-                        parseCommand(splitted_file[currentIndex + i * 2], currentIndex + i * 2)
-                        line = splitted_file[currentIndex + i * 2]
-                        if ("REPEAT" in line or "EXECUTE CODE IF TRUE" in line) and not line.startswith("END OF"):
-                            i += int(line.split(":")[1].split()[3])
-                        i += 1
-                    if isArgumentVar(arguments[0]):
-                        left = var2num(arguments[0])
-                    else:
-                        left = int(arguments[0])
-                    if isArgumentVar(arguments[2]):
-                        right = var2num(arguments[2])
-                    else:
-                        right = int(arguments[2])
-            elif arguments[1] == "NEQUALS":
-                left = 0
-                right = 0
-                if isArgumentVar(arguments[0]):
-                    left = var2num(arguments[0])
-                else:
-                    left = int(arguments[0])
-                if isArgumentVar(arguments[2]):
-                    right = var2num(arguments[2])
-                else:
-                    right = int(arguments[2])
-                while left != right:
-                    i = 1
-                    while i <= int(arguments[3]):
-                        parseCommand(splitted_file[currentIndex + i * 2], currentIndex + i * 2)
-                        line = splitted_file[currentIndex + i * 2]
-                        if ("REPEAT" in line or "EXECUTE CODE IF TRUE" in line) and not line.startswith("END OF"):
-                            i += int(line.split(":")[1].split()[3])
-                        i += 1
-                    if isArgumentVar(arguments[0]):
-                        left = var2num(arguments[0])
-                    else:
-                        left = int(arguments[0])
-                    if isArgumentVar(arguments[2]):
-                        right = var2num(arguments[2])
-                    else:
-                        right = int(arguments[2])
-            elif arguments[1] == "SUPERIOR":
-                left = 0
-                right = 0
-                if isArgumentVar(arguments[0]):
-                    left = var2num(arguments[0])
-                else:
-                    left = int(arguments[0])
-                if isArgumentVar(arguments[2]):
-                    right = var2num(arguments[2])
-                else:
-                    right = int(arguments[2])
-                while left > right:
-                    i = 1
-                    while i <= int(arguments[3]):
-                        parseCommand(splitted_file[currentIndex + i * 2], currentIndex + i * 2)
-                        line = splitted_file[currentIndex + i * 2]
-                        if ("REPEAT" in line or "EXECUTE CODE IF TRUE" in line) and not line.startswith("END OF"):
-                            i += int(line.split(":")[1].split()[3])
-                        i += 1
-                    if isArgumentVar(arguments[0]):
-                        left = var2num(arguments[0])
-                    else:
-                        left = int(arguments[0])
-                    if isArgumentVar(arguments[2]):
-                        right = var2num(arguments[2])
-                    else:
-                        right = int(arguments[2])
-            elif arguments[1] == "INFERIOR":
-                left = 0
-                right = 0
-                if isArgumentVar(arguments[0]):
-                    left = var2num(arguments[0])
-                else:
-                    left = int(arguments[0])
-                if isArgumentVar(arguments[2]):
-                    right = var2num(arguments[2])
-                else:
-                    right = int(arguments[2])
-                while left < right:
-                    i = 1
-                    while i <= int(arguments[3]):
-                        parseCommand(splitted_file[currentIndex + i * 2], currentIndex + i * 2)
-                        line = splitted_file[currentIndex + i * 2]
-                        if ("REPEAT" in line or "EXECUTE CODE IF TRUE" in line) and not line.startswith("END OF"):
-                            i += int(line.split(":")[1].split()[3])
-                        i += 1
-                    if isArgumentVar(arguments[0]):
-                        left = var2num(arguments[0])
-                    else:
-                        left = int(arguments[0])
-                    if isArgumentVar(arguments[2]):
-                        right = var2num(arguments[2])
-                    else:
-                        right = int(arguments[2])
-            elif arguments[1] == "SUPEQ":
-                left = 0
-                right = 0
-                if isArgumentVar(arguments[0]):
-                    left = var2num(arguments[0])
-                else:
-                    left = int(arguments[0])
-                if isArgumentVar(arguments[2]):
-                    right = var2num(arguments[2])
-                else:
-                    right = int(arguments[2])
-                while left > right or left == right:
-                    i = 1
-                    while i <= int(arguments[3]):
-                        parseCommand(splitted_file[currentIndex + i * 2], currentIndex + i * 2)
-                        line = splitted_file[currentIndex + i * 2]
-                        if ("REPEAT" in line or "EXECUTE CODE IF TRUE" in line) and not line.startswith("END OF"):
-                            i += int(line.split(":")[1].split()[3])
-                        i += 1
-                    if isArgumentVar(arguments[0]):
-                        left = var2num(arguments[0])
-                    else:
-                        left = int(arguments[0])
-                    if isArgumentVar(arguments[2]):
-                        right = var2num(arguments[2])
-                    else:
-                        right = int(arguments[2])
-            elif arguments[1] == "INFEQ":
-                left = 0
-                right = 0
-                if isArgumentVar(arguments[0]):
-                    left = var2num(arguments[0])
-                else:
-                    left = int(arguments[0])
-                if isArgumentVar(arguments[2]):
-                    right = var2num(arguments[2])
-                else:
-                    right = int(arguments[2])
-                while left < right or left == right:
-                    i = 1
-                    while i <= int(arguments[3]):
-                        parseCommand(splitted_file[currentIndex + i * 2], currentIndex + i * 2)
-                        line = splitted_file[currentIndex + i * 2]
-                        if ("REPEAT" in line or "EXECUTE CODE IF TRUE" in line) and not line.startswith("END OF"):
-                            i += int(line.split(":")[1].split()[3])
-                        i += 1
-                    if isArgumentVar(arguments[0]):
-                        left = var2num(arguments[0])
-                    else:
-                        left = int(arguments[0])
-                    if isArgumentVar(arguments[2]):
-                        right = var2num(arguments[2])
-                    else:
-                        right = int(arguments[2])
+            repeatCodeBlocks(arguments[1], arguments, currentIndex, False)
         case "INSERT TO CONSOLE AS ASCII":
             finalString = ""
             for arg in range(len(arguments)):
-                
                 if arguments[int(arg)] != '':
                     if isArgumentVar(arguments[int(arg)]):
                         finalString += chr(int(var2num(arguments[int(arg)]))) 
